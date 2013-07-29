@@ -5,20 +5,28 @@ using System.Linq;
 
 namespace TestCodeReview.RefcatoredAndRetrocompatible
 {
-    public class CSVReaderWriter
+    public class CsvReaderWriterRefactoredButRetrocompatible :IDisposable
     {
         private CsvReader csvRader;
         private CsvWriter csvWriter;
 
+
+        /// <summary>
+        /// need to create new object ad assigment here.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="mode"></param>
         public void Open(string fileName, Mode mode)
         {
             switch (mode)
             {
                 case Mode.Read:
-                    csvRader = new CsvReader(fileName);
+                    csvRader = new CsvReader();
+                    csvRader.Open(fileName);
                     break;
                 case Mode.Write:
-                    csvWriter = new CsvWriter(fileName);
+                    csvWriter = new CsvWriter();
+                    csvWriter.Open(fileName);
                     break;
             }
         }
@@ -31,6 +39,16 @@ namespace TestCodeReview.RefcatoredAndRetrocompatible
                 csvWriter.Close();
         }
 
+        /// <summary>
+        /// Return a row splitted by tab
+        /// </summary>
+        /// <returns>Null for empty response</returns>
+        public List<string> Read()
+        {
+            return csvRader.Read();
+        }
+
+        [Obsolete("Deprecated.", true)]
         public bool Read(string column1, string column2)
         {
             var result = csvRader.Read();
@@ -38,6 +56,7 @@ namespace TestCodeReview.RefcatoredAndRetrocompatible
             return result != null;
         }
 
+        [Obsolete("Deprecated.")]
         public bool Read(out string column1, out string column2)
         {
             var result = csvRader.Read();
@@ -54,15 +73,29 @@ namespace TestCodeReview.RefcatoredAndRetrocompatible
             return true;
         }
 
-        public void Write(params string[] columns)
+        public void Write(List<string> columns)
         {
             csvWriter.Write(columns);
+        }
+
+        [Obsolete("Deprecated.", true)]
+        public void Write(params string[] columns)
+        {
+            csvWriter.Write(columns.ToList());
+        }
+
+        public void Dispose()
+        {
+            if (csvRader != null)
+                csvRader.Dispose();
+            if (csvWriter != null)
+                csvWriter.Dispose();
         }
     }
 
     public interface ICommonFileOperation : IDisposable
     {
-        void Open();
+        void Open(string fileName);
         void Close();
     }
 
@@ -78,15 +111,9 @@ namespace TestCodeReview.RefcatoredAndRetrocompatible
     {
         private StreamReader reader;
 
-        private readonly string fileName;
         private const char Separator = '\t';
 
-        public CsvReader(string fileName)
-        {
-            this.fileName = fileName;
-        }
-
-        public void Open()
+        public void Open(string fileName)
         {
             if (!File.Exists(fileName))
                 throw new ArgumentException("File not found!");
@@ -106,7 +133,6 @@ namespace TestCodeReview.RefcatoredAndRetrocompatible
             reader.Dispose();
         }
 
-
         public List<string> Read()
         {
             var line = reader.ReadLine();
@@ -119,15 +145,10 @@ namespace TestCodeReview.RefcatoredAndRetrocompatible
     {
         private StreamWriter writer;
 
-        private readonly string fileName;
         private const string Separator = "\t";
 
-        public CsvWriter(string fileName)
-        {
-            this.fileName = fileName;
-        }
 
-        public void Open()
+        public void Open(string fileName)
         {
             if (File.Exists(fileName))
                 throw new ArgumentException("File already exist!");

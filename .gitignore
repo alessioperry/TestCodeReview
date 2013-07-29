@@ -1,0 +1,7 @@
+# git ignore file
+TestCodeReview\bin\Debug*/
+TestCodeReview\obj\Debug*/
+TestCodeReview/TestCodeReview.csproj.user
+TestCodeReview.sln.DotSettings.user
+TestCodeReview.v11.suo
+TestCodeReview/bin/Debug/nunit.framework.dll

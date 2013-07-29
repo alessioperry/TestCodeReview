@@ -3,19 +3,9 @@ using System.IO;
 
 namespace TestCodeReview.Refactor20130729
 {
-    /// <summary>
-    /// A junior developer was tasked with writing a reusable solution for an application to read and write text files that hold tab separated data.
-    /// His implementation, although it works and meets the needs of the application, is of very low quality.
-    /// Your task:
-    ///     - Identify and annotate the shortcomings in the current implementation as if you were doing a code review, using comments in this file.
-    ///     - In a fresh solution, refactor this implementation into clean,  elegant, rock-solid & well performing code, without over-engineering. 
-    ///     -   Where you make trade offs, comment & explain.
-    ///     - Assume this code is in production and it needs to be backwards compatible. Therefore if you decide to change the public interface, 
-    ///       please deprecate the existing methods. Feel free to evolve the code in other ways though.   
-    /// </summary>
 
     ///Single Responsibility Principle Violation: There should never be more than one reason for a class to change.
- public class CsvReaderWriter
+ public class CsvReaderWriterCommented
     {
         ///I need to see the way this class interact with other object.
         
@@ -32,7 +22,7 @@ namespace TestCodeReview.Refactor20130729
         public void Open(string fileName, Mode mode)
         {
             //this code block smels like a Factory Method Design Pattern but only if theres a common interface you try to implemets it
-            //use switch method
+            //using switch switch method
             if (mode == Mode.Read)
             {
                 _readerStream = File.OpenText(fileName);
@@ -45,6 +35,7 @@ namespace TestCodeReview.Refactor20130729
             }
             else
             {
+                //throw is unnecessary if you use mode!
                 throw new Exception("Unknown file mode for " + fileName);
             }
         }
@@ -67,22 +58,23 @@ namespace TestCodeReview.Refactor20130729
         
         /// <summary>
         /// it is not clear whath this method do, it is called Read but it check if var columns are splittable by separator
-        /// it is a code monster    
+        /// you colud Rename it in Check but code are duplicate with same function
         /// </summary>
         public bool Read(string column1, string column2)
         {
-            const int FIRST_COLUMN = 0; //you do not need this const here
+            const int FIRST_COLUMN = 0; //you do not need this const here.
             const int SECOND_COLUMN = 1;
 
             string line; //use var keyword
             string[] columns; //use var keyword
 
-            char[] separator = { '\t' }; //separator are a constant you have use it in other part delete duplications
+            char[] separator = { '\t' }; //'\it' is already use, delete duplications
 
             line = ReadLine(); //use native method here, not a private wrapper
 
             columns = line.Split(separator);
 
+            //no one knows value of column1 and column2. why assign a value to them?
             if (columns.Length == 0)
             {
                 column1 = null; //column1 are initialized but this value remain on the function scope and never returned 
@@ -90,9 +82,9 @@ namespace TestCodeReview.Refactor20130729
 
                 return false;
             }
-            else
+            else //you can delete else branch (obviously not the contained code)
             {
-                column1 = columns[FIRST_COLUMN]; //same issue as in the if case
+                column1 = columns[FIRST_COLUMN]; //do not use CONST here use integer
                 column2 = columns[SECOND_COLUMN];
 
                 return true;
@@ -101,7 +93,8 @@ namespace TestCodeReview.Refactor20130729
 
         /// <summary>
         ///this function return a boolean and change the value of two string.
-        ///this is an anti pattern we need to refactor this method. Return a list or array of string, null if there is no return value, push the result control outside this class
+        ///this is an anti pattern. We need to refactor this method. 
+        /// Return a list or array of string, null if there is no return value, push the control logic outside this class.
         /// or make this method obsolete.
         /// </summary>
         public bool Read(out string column1, out string column2)
@@ -144,6 +137,7 @@ namespace TestCodeReview.Refactor20130729
 
      /// <summary>
      /// we need it?
+     /// This function is private, inside the class use directly the same method of the StreamReader
      /// </summary>
      /// <returns></returns>
         private string ReadLine()
@@ -154,7 +148,7 @@ namespace TestCodeReview.Refactor20130729
 
         public void Write(params string[] columns)
         {
-            string outPut = ""; //use StringBuilder.
+            string outPut = ""; //use StringBuilder, instead of string
 
             //use linq we are in 2013
             for (int i = 0; i < columns.Length; i++)

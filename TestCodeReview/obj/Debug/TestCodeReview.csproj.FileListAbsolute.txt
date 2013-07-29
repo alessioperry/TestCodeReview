@@ -1,0 +1,7 @@
+C:\GitHub\TestCodeReview\TestCodeReview\TestCodeReview\bin\Debug\TestCodeReview.dll
+C:\GitHub\TestCodeReview\TestCodeReview\TestCodeReview\bin\Debug\TestCodeReview.pdb
+C:\GitHub\TestCodeReview\TestCodeReview\TestCodeReview\bin\Debug\nunit.framework.dll
+C:\GitHub\TestCodeReview\TestCodeReview\TestCodeReview\bin\Debug\nunit.framework.xml
+C:\GitHub\TestCodeReview\TestCodeReview\TestCodeReview\obj\Debug\TestCodeReview.dll
+C:\GitHub\TestCodeReview\TestCodeReview\TestCodeReview\obj\Debug\TestCodeReview.pdb
+C:\GitHub\TestCodeReview\TestCodeReview\TestCodeReview\obj\Debug\TestCodeReview.csprojResolveAssemblyReference.cache

@@ -43,12 +43,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Refactor20130729\CsvReaderWriter.cs" />
-    <Compile Include="Refactor20130729\Refactored.cs" />
-    <Compile Include="Utilizer.cs" />
+    <Compile Include="Refactor20130729\CsvReaderWriterCommented.cs" />
+    <Compile Include="Refactor20130729\CsvReaderWriterRefactoredButRetrocompatible.cs" />
+    <Compile Include="CvsReaderTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="TestFiles\testRead.csv" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
