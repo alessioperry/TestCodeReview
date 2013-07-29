@@ -9,15 +9,16 @@ namespace TestCodeReview.Refactor20130729
     /// Your task:
     ///     - Identify and annotate the shortcomings in the current implementation as if you were doing a code review, using comments in this file.
     ///     - In a fresh solution, refactor this implementation into clean,  elegant, rock-solid & well performing code, without over-engineering. 
-    ///     - Where you make trade offs, comment & explain.
+    ///     -   Where you make trade offs, comment & explain.
     ///     - Assume this code is in production and it needs to be backwards compatible. Therefore if you decide to change the public interface, 
     ///       please deprecate the existing methods. Feel free to evolve the code in other ways though.   
     /// </summary>
 
-    ///The Single Responsibility Principle: There should never be more than one reason for a class to change.
-    /// You need CvsReader Class and CvsWriter Class
-    public class CsvReaderWriter
+    ///Single Responsibility Principle Violation: There should never be more than one reason for a class to change.
+ public class CsvReaderWriter
     {
+        ///I need to see the way this class interact with other object.
+        
         private StreamReader _readerStream = null;
         private StreamWriter _writerStream = null;
 
@@ -70,17 +71,17 @@ namespace TestCodeReview.Refactor20130729
         /// </summary>
         public bool Read(string column1, string column2)
         {
-            const int FIRST_COLUMN = 0; //make variable 
+            const int FIRST_COLUMN = 0; //you do not need this const here
             const int SECOND_COLUMN = 1;
 
-            string line; //use inline inizialization
-            string[] columns; //use inline inizialization
+            string line; //use var keyword
+            string[] columns; //use var keyword
 
-            char[] separator = { '\t' }; //separator are a constant
+            char[] separator = { '\t' }; //separator are a constant you have use it in other part delete duplications
 
-            line = ReadLine(); //use native method here not a private  wrapper
+            line = ReadLine(); //use native method here, not a private wrapper
 
-            columns = line.Split(separator);//performance issue splitted string allocate heap memory and can cause Out Of Memory exception
+            columns = line.Split(separator);
 
             if (columns.Length == 0)
             {
@@ -100,7 +101,8 @@ namespace TestCodeReview.Refactor20130729
 
         /// <summary>
         ///this function return a boolean and change the value of two string.
-        ///this is an anti pattern we need to refactor this method
+        ///this is an anti pattern we need to refactor this method. Return a list or array of string, null if there is no return value, push the result control outside this class
+        /// or make this method obsolete.
         /// </summary>
         public bool Read(out string column1, out string column2)
         {
@@ -140,6 +142,10 @@ namespace TestCodeReview.Refactor20130729
             }
         }
 
+     /// <summary>
+     /// we need it?
+     /// </summary>
+     /// <returns></returns>
         private string ReadLine()
         {
             return _readerStream.ReadLine();
@@ -148,7 +154,7 @@ namespace TestCodeReview.Refactor20130729
 
         public void Write(params string[] columns)
         {
-            string outPut = "";
+            string outPut = ""; //use StringBuilder.
 
             //use linq we are in 2013
             for (int i = 0; i < columns.Length; i++)
@@ -167,6 +173,9 @@ namespace TestCodeReview.Refactor20130729
             WriteLine(outPut);
         }
 
+         /// <summary>
+         /// Seriously we need this private method?
+         /// </summary>
         private void WriteLine(string line)
         {
             _writerStream.WriteLine(line);
